@@ -1,11 +1,9 @@
 package com.example.pontejavabackendtask.Controller;
 
-import com.example.pontejavabackendtask.dto.ContactCreateDto;
-import com.example.pontejavabackendtask.dto.ContactDeleteDto;
-import com.example.pontejavabackendtask.dto.ContactUpdateDto;
-import com.example.pontejavabackendtask.dto.EmailCreateDto;
-import com.example.pontejavabackendtask.service.ContactService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.pontejavabackendtask.dto.*;
+import com.example.pontejavabackendtask.Service.AddressService;
+import com.example.pontejavabackendtask.Service.ContactService;
+import com.example.pontejavabackendtask.Service.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +13,16 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class ContactController {
     private final ContactService contactService;
+    private final EmailService emailService;
+    private final AddressService addressService;
     private final Logger logger = LoggerFactory.getLogger(ContactController.class);
 
 
     @Autowired
-    public ContactController(ContactService contactService) {
+    public ContactController(ContactService contactService, EmailService emailService, AddressService addressService) {
         this.contactService = contactService;
+        this.emailService = emailService;
+        this.addressService = addressService;
     }
 
 
@@ -50,9 +52,29 @@ public class ContactController {
         return ResponseEntity.ok(contactService.getContacts());
     }
 
+    //manage emails
+
     @PostMapping("/contact/email")
     public ResponseEntity<?> addEmailToContact(@RequestBody EmailCreateDto emailCreateDto) {
-        return contactService.addEmailToContact(emailCreateDto.getContactId(), emailCreateDto.getEmail());
+        return emailService.addEmailToContact(emailCreateDto.getContactId(), emailCreateDto.getEmail());
     }
+
+    @PutMapping("/contact/email")
+    public ResponseEntity<?> updateEmailFromContact(@RequestBody EmailUpdateDto emailUpdateDto) {
+        return emailService.updateEmailFromContact(emailUpdateDto.getId(), emailUpdateDto.getEmail());
+    }
+
+    @DeleteMapping("/contact/email")
+    public ResponseEntity<?> deleteEmailFromContact(@RequestBody EmailDeleteDto emailDeleteDto) {
+        return emailService.deleteEmailFromContact(emailDeleteDto.getId());
+    }
+
+    //manage addresses
+
+    @PostMapping("/contact/address")
+    public ResponseEntity<?> addAddressToContact(@RequestBody AddressCreateDto addressCreateDto) {
+        return addressService.addAddresstoContact(addressCreateDto.getContactId(), addressCreateDto.getAddress());
+    }
+
 
 }
