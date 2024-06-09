@@ -1,0 +1,141 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-users
+      author: Mozes
+      preConditions:
+        - not:
+            - tableExists:
+                tableName: users
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: create-table-contacts
+      author: Mozes
+      preConditions:
+        - not:
+            - tableExists:
+                tableName: contacts
+      changes:
+        - createTable:
+            tableName: contacts
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: create-table-emails
+      author: Mozes
+      preConditions:
+        - not:
+            - tableExists:
+                tableName: emails
+      changes:
+        - createTable:
+            tableName: emails
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: contact_id
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: create-table-addresses
+      author: Mozes
+      preConditions:
+        - not:
+            - tableExists:
+                tableName: addresses
+      changes:
+        - createTable:
+            tableName: addresses
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: contact_id
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: address
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: add-foreign-key-constraint-to-emails
+      author: Mozes
+      preConditions:
+        - not:
+            - foreignKeyConstraintExists:
+                foreignKeyName: fk_emails_contact_id
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: emails
+            baseColumnNames: contact_id
+            constraintName: fk_emails_contact_id
+            referencedTableName: contacts
+            referencedColumnNames: id
+  - changeSet:
+      id: add-foreign-key-constraint-to-addresses
+      author: Mozes
+      preConditions:
+        - not:
+            - foreignKeyConstraintExists:
+                foreignKeyName: fk_addresses_contact_id
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: addresses
+            baseColumnNames: contact_id
+            constraintName: fk_addresses_contact_id
+            referencedTableName: contacts
+            referencedColumnNames: id
