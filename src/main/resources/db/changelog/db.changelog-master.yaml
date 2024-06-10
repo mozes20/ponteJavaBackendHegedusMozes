@@ -30,6 +30,7 @@ databaseChangeLog:
               - column:
                   name: role
                   type: VARCHAR(255)
+                  defaultValue: 'USER'
                   constraints:
                     nullable: false
   - changeSet:
@@ -137,5 +138,26 @@ databaseChangeLog:
             baseTableName: addresses
             baseColumnNames: contact_id
             constraintName: fk_addresses_contact_id
+            referencedTableName: contacts
+            referencedColumnNames: id
+  - changeSet:
+      id: add-contact-to-users
+      author: Mozes
+      preConditions:
+        - not:
+            - columnExists:
+                tableName: users
+                columnName: contact_id
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: contact_id
+                  type: INT
+        - addForeignKeyConstraint:
+            baseTableName: users
+            baseColumnNames: contact_id
+            constraintName: fk_users_contact_id
             referencedTableName: contacts
             referencedColumnNames: id

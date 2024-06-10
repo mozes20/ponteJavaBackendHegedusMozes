@@ -4,9 +4,12 @@ import com.example.pontejavabackendtask.Entity.ContactEntity;
 import com.example.pontejavabackendtask.Repository.AddressRepository;
 import com.example.pontejavabackendtask.Repository.ContactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +51,7 @@ public class ContactService {
         Optional<ContactEntity> contact = contactRepository.findById(id);
         if (contact.isPresent()) {
             contactRepository.delete(contact.get());
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(contact.get());
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -61,8 +64,8 @@ public class ContactService {
             return ResponseEntity.notFound().build();
         }
     }
-    public List<ContactEntity> getContacts() {
-        return contactRepository.findAll();
+    public Page<ContactEntity> getContacts(Pageable pageable) {
+        return contactRepository.findAll(pageable);
     }
 
 

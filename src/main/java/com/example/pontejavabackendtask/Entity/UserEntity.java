@@ -12,6 +12,7 @@ import java.util.List;
 
 @Getter
 @Entity
+@Table(name = "users")
 public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,8 +26,12 @@ public class UserEntity implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "contact_id", referencedColumnName = "id")
+    private ContactEntity contact;
+
     @Setter
-    @Column(nullable = false)
+    @Column(nullable = true, columnDefinition = "varchar(255) default 'USER'")
     private String role;
 
     @Override

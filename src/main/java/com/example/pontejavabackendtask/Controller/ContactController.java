@@ -1,5 +1,6 @@
 package com.example.pontejavabackendtask.Controller;
 
+import com.example.pontejavabackendtask.Entity.ContactEntity;
 import com.example.pontejavabackendtask.dto.*;
 import com.example.pontejavabackendtask.Service.AddressService;
 import com.example.pontejavabackendtask.Service.ContactService;
@@ -7,10 +8,14 @@ import com.example.pontejavabackendtask.Service.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/contact")
 public class ContactController {
     private final ContactService contactService;
     private final EmailService emailService;
@@ -26,52 +31,55 @@ public class ContactController {
     }
 
 
-
-    @PostMapping("/contact")
+    @PostMapping()
     public ResponseEntity<?> createContact(@RequestBody ContactCreateDto contact) {
         return contactService.createContact(contact.getName());
     }
 
-    @PutMapping("/contact")
+    @PutMapping("/")
     public ResponseEntity<?> updateContact(@RequestBody ContactUpdateDto contact) {
         return contactService.updateContact(contact.getId(), contact.getName());
     }
 
-    @DeleteMapping("/contact")
-    public ResponseEntity<?> deleteContact(@RequestBody ContactDeleteDto contact) {
-        return contactService.deleteContact(contact.getId());
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteContact(@PathVariable String id) {
+        System.out.println("deleteContact");
+        return contactService.deleteContact(Integer.parseInt(id));
+
     }
 
-    @GetMapping("/contact/{id}")
-    public ResponseEntity<?> getContact(@PathVariable int id) {
-        return contactService.getContact(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getContact(@PathVariable String id) {
+        return contactService.getContact(Integer.parseInt(id));
     }
 
     @GetMapping("/contacts")
-    public ResponseEntity<?> getContacts() {
-        return ResponseEntity.ok(contactService.getContacts());
+    public ResponseEntity<?> getContacts(Pageable pageable) {
+        System.out.println("getContacts");
+        Page<ContactEntity> contacts = contactService.getContacts(pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(contacts);
     }
 
     //manage emails
 
-    @PostMapping("/contact/email")
+    @PostMapping("/email")
     public ResponseEntity<?> addEmailToContact(@RequestBody EmailCreateDto emailCreateDto) {
         return emailService.addEmailToContact(emailCreateDto.getContactId(), emailCreateDto.getEmail());
     }
 
-    @PutMapping("/contact/email")
+    @PutMapping("/email")
     public ResponseEntity<?> updateEmailFromContact(@RequestBody EmailUpdateDto emailUpdateDto) {
         return emailService.updateEmailFromContact(emailUpdateDto.getId(), emailUpdateDto.getEmail());
     }
 
-    @DeleteMapping("/contact/email")
+    @DeleteMapping("/email")
     public ResponseEntity<?> deleteEmailFromContact(@RequestBody EmailDeleteDto emailDeleteDto) {
         return emailService.deleteEmailFromContact(emailDeleteDto.getId());
     }
 
     //manage addresses
 
-    @PostMapping("/contact/address")
+    @PostMapping("address")
     public ResponseEntity<?> addAddressToContact(@RequestBody AddressCreateDto addressCreateDto) {
         return addressService.addAddresstoContact(addressCreateDto.getContactId(), addressCreateDto.getAddress());
     }
