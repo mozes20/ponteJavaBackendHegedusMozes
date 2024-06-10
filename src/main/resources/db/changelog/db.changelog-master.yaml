@@ -161,3 +161,16 @@ databaseChangeLog:
             constraintName: fk_users_contact_id
             referencedTableName: contacts
             referencedColumnNames: id
+  - changeSet:
+      id: insert-user
+      author: Mozes
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  value: "ponte"
+              - column:
+                  name: password
+                  value: "$2a$10$QtrnYjpaSFUhe2I1T6z15OLJ57VuowMYhow/iSIWVFuV2xa11lF1C"
